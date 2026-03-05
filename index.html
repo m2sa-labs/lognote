@@ -33,10 +33,11 @@ select {
   background: #ffffff;
   width: 100%;
   max-width: 420px;
-  min-height: 100vh;
+  min-height: calc(100vh - 80px);
   padding: 24px 20px 40px 20px;
 
-  margin: 0 auto;   /* ← これ追加！ */
+  margin: 0 auto; 
+  box-sizing: border-box;  
 }
 
 h2 {
@@ -351,10 +352,47 @@ li {
 .bottom-nav button div{
   font-size:20px;
 }
+body {
+  font-family: "Hiragino Maru Gothic ProN", "Arial Rounded MT Bold", sans-serif;
+  background: #f7f4ef;
+  margin: 0;
+  padding: 20px;
+  overflow-x: hidden;
+}
+.menu{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:white;
+  border-radius:20px 20px 0 0;
+  box-shadow:0 -5px 20px rgba(0,0,0,0.15);
+  padding:10px 0;
+  z-index:9999;
+}
+
+.menu div{
+  padding:16px;
+  text-align:center;
+  font-size:16px;
+  border-bottom:1px solid #eee;
+}
+
+.menu div:last-child{
+  border-bottom:none;
+}
+
+.menu div:active{
+  background:#f5f5f5;
+}
 </style>
 </head>
 <body>
-
+<div id="itemMenu" class="menu" style="display:none;">
+  <div onclick="renameItem()">名前変更</div>
+  <div onclick="deleteItem()">項目を削除</div>
+  <div onclick="closeMenu()">キャンセル</div>
+</div>
 <div class="card">
   <div id="setupScreen" style="display:none; text-align:center;">
 
@@ -510,14 +548,8 @@ if (!currentUser) {
 
 }
 
-    let userItems =
- JSON.parse(localStorage.getItem("userItems")) || {
-   "ママ": ["美容院","病院","歯医者"],
-   "結菜": ["病院","歯医者"],
-   "洸希": ["病院"],
-   "パパ": ["病院"],
-   "共通": ["病院"]
- };
+   let userItems =
+JSON.parse(localStorage.getItem("userItems")) || {};
 
 function renderButtons() {
 
@@ -960,9 +992,53 @@ function selectFirstIcon(element, icon) {
 
   element.classList.add("icon-selected");
 }
+let selectedItem = null;
 
- 
+function openItemMenu(item){
+  selectedItem = item;
+  document.getElementById("itemMenu").style.display = "block";
+}
 
+function closeMenu(){
+  document.getElementById("itemMenu").style.display = "none";
+}
+ function renameItem(){
+
+  const newName = prompt("新しい名前");
+
+  if(!newName) return;
+
+  userItems[currentUser] =
+    userItems[currentUser].map(i =>
+      i === selectedItem ? newName : i
+    );
+
+  localStorage.setItem(
+    "userItems",
+    JSON.stringify(userItems)
+  );
+
+  closeMenu();
+  renderButtons();
+}
+function deleteItem(){
+
+  if(!confirm(selectedItem + " を削除する？"))
+    return;
+
+  userItems[currentUser] =
+    userItems[currentUser].filter(
+      i => i !== selectedItem
+    );
+
+  localStorage.setItem(
+    "userItems",
+    JSON.stringify(userItems)
+  );
+
+  closeMenu();
+  renderButtons();
+}
 function startApp() {
 
   const name =
@@ -1110,43 +1186,6 @@ if (!localStorage.getItem("users")) {
 
   renderUsers();
   changeUser(currentUser);
-}
-function openItemMenu(item) {
-
-  const action = confirm(
-    item + "\n\nOK → 名前変更\nキャンセル → 削除"
-  );
-
-  // 名前変更
-  if (action) {
-
-    const newName =
-      prompt("新しい名前を入力");
-
-    if (!newName) return;
-
-    userItems[currentUser] =
-      userItems[currentUser].map(i =>
-        i === item ? newName : i
-      );
-
-  } else {
-
-    if (!confirm(item + " を削除する？"))
-      return;
-
-    userItems[currentUser] =
-      userItems[currentUser].filter(
-        i => i !== item
-      );
-  }
-
-  localStorage.setItem(
-    "userItems",
-    JSON.stringify(userItems)
-  );
-
-  renderButtons();
 }
 
 
