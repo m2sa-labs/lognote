@@ -4,7 +4,8 @@ const urlsToCache = [
   "./",
   "./index.html",
   "./icon.png",
-  "./manifest.json"
+  "./manifest.json",
+  "./sw.js"
 ];
 
 // インストール
