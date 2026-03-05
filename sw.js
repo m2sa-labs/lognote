@@ -1,4 +1,4 @@
-const CACHE_NAME = "life-log-cache-v1";
+const CACHE_NAME = "life-log-cache-v2";
 
 const urlsToCache = [
   "./",
@@ -10,7 +10,9 @@ const urlsToCache = [
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
   );
 });
 

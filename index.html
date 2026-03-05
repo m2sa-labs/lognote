@@ -14,11 +14,13 @@
 <meta name="theme-color" content="#9bbfa6">
   <title>Life Log</title>
   <style>
+    body {
+  overflow-x: hidden;
+}
 body {
   font-family: "Hiragino Maru Gothic ProN", "Arial Rounded MT Bold", sans-serif;
   background: #f7f4ef;
   margin: 0;
-  padding: 20px;
 }
 select {
   font-family: 'M PLUS Rounded 1c', sans-serif;
@@ -33,11 +35,11 @@ select {
   background: #ffffff;
   width: 100%;
   max-width: 420px;
-  min-height: calc(100vh - 80px);
-  padding: 24px 20px 40px 20px;
+  min-height: 100vh;
 
-  margin: 0 auto; 
-  box-sizing: border-box;  
+  padding: 24px 20px 120px 20px;
+
+  margin: 0 auto;
 }
 
 h2 {
@@ -331,7 +333,7 @@ li {
   position:fixed;
   bottom:0;
   left:0;
-  width:100%;
+  right:0;
   background:white;
   display:flex;
   justify-content:space-around;
@@ -361,7 +363,7 @@ body {
 }
 .menu{
   position:fixed;
-  bottom:0;
+  bottom:-200px;
   left:0;
   width:100%;
   background:white;
@@ -369,6 +371,11 @@ body {
   box-shadow:0 -5px 20px rgba(0,0,0,0.15);
   padding:10px 0;
   z-index:9999;
+  transition:0.3s;
+}
+
+.menu.show{
+  bottom:0;
 }
 
 .menu div{
@@ -385,6 +392,22 @@ body {
 .menu div:active{
   background:#f5f5f5;
 }
+body.pink { background:#fff0f5; }
+body.blue { background:#eef6ff; }
+body.rose { background:#fff2f7; }
+body.sky { background:#f2f6ff; }
+body.yellow { background:#fff9e6; }
+
+body.green { background:#f4fff4; }
+body.purple { background:#f6f4ff; }
+body.mint { background:#f2fffa; }
+
+body.sakura { background:#fff6fb; }
+body.flower { background:#fffaf0; }
+
+body.brown { background:#fff8f2; }
+
+body.common { background:#f5f5f5; }
 </style>
 </head>
 <body>
@@ -464,11 +487,6 @@ body {
 
 <input type="text" id="newItem" placeholder="新しい項目">
 <button onclick="addNewItem()">＋ 項目追加</button>
-<button onclick="toggleEditMode()" id="editBtn">
-✏️ 編集モードOFF
-</button>
-
-
 
 <button onclick="backupData()">💾 バックアップ保存</button>
 
@@ -533,7 +551,6 @@ function getIcon(name) {
 
   return "📌 ";
 }
-let editMode = false;
   let users =
 JSON.parse(localStorage.getItem("users")) || [];
 
@@ -602,74 +619,18 @@ btn.addEventListener("touchmove", () => {
   clearTimeout(pressTimer);
 });
 
-
-    if (editMode) {
-
-  // 上
-  const up = document.createElement("span");
-  up.textContent = " ⬆️";
-  up.className = "move-btn";
-  up.onclick = (e) => {
-    e.stopPropagation();
-
-    const list = userItems[currentUser];
-    const index = list.indexOf(item);
-
-    if (index > 0) {
-      [list[index - 1], list[index]] =
-        [list[index], list[index - 1]];
-
-      localStorage.setItem("userItems", JSON.stringify(userItems));
-      renderButtons();
-    }
-  };
-
-  // 下
-  const down = document.createElement("span");
-  down.textContent = " ⬇️";
-  down.className = "move-btn";
-  down.onclick = (e) => {
-    e.stopPropagation();
-
-    const list = userItems[currentUser];
-    const index = list.indexOf(item);
-
-    if (index < list.length - 1) {
-      [list[index + 1], list[index]] =
-        [list[index], list[index + 1]];
-
-      localStorage.setItem("userItems", JSON.stringify(userItems));
-      renderButtons();
-    }
-  };
-
-  // 削除
-  const del = document.createElement("span");
-  del.textContent = " ❌";
-  del.onclick = (e) => {
-    e.stopPropagation();
-
-    if (confirm(item + " を削除する？")) {
-      userItems[currentUser] =
-        userItems[currentUser].filter(i => i !== item);
-
-      localStorage.setItem("userItems", JSON.stringify(userItems));
-      renderButtons();
-    }
-  };
-
- const actions = document.createElement("span");
-
-actions.appendChild(up);
-actions.appendChild(down);
-actions.appendChild(del);
-
-btn.appendChild(actions);
-}
     area.appendChild(btn);
 
   });
+document.addEventListener("click", function(e) {
 
+  const menu = document.getElementById("itemMenu");
+
+  if (!menu.contains(e.target)) {
+    closeMenu();
+  }
+
+});
 }
 function changeUser(name, element) {
   currentUser = name;
@@ -883,20 +844,6 @@ document.getElementById("currentUserDisplay").textContent =
 }
 renderButtons();
 
-function toggleEditMode() {
-
-  editMode = !editMode;
-
-  const btn =
-    document.getElementById("editBtn");
-
-  btn.textContent =
-    editMode
-      ? "✅ 編集モードON"
-      : "✏️ 編集モードOFF";
-
-  renderButtons();
-}
 function loadBackup() {
 
   const fileInput =
@@ -958,7 +905,38 @@ function renderUsers() {
       user.icon + "<span>" + user.name + "</span>";
 
     div.onclick = () => changeUser(user.name, div);
+let pressTimer;
 
+div.addEventListener("touchstart", () => {
+
+  pressTimer = setTimeout(() => {
+
+    if (user.name === "共通") return;
+
+    if (confirm(user.name + " を削除する？")) {
+
+      users = users.filter(u => u.name !== user.name);
+
+      // ⭐ 今のユーザーだったら変更
+      if (currentUser === user.name) {
+        currentUser = users.length > 0 ? users[0].name : null;
+        localStorage.setItem("currentUser", currentUser);
+      }
+
+      localStorage.setItem("users", JSON.stringify(users));
+
+      renderUsers();
+      renderButtons();
+
+    }
+
+  }, 700);
+
+});
+
+div.addEventListener("touchend", () => {
+  clearTimeout(pressTimer);
+});
     userArea.appendChild(div);
   });
 }
@@ -968,16 +946,6 @@ if (currentUser) {
   changeUser(currentUser);
 }
 
-function autoIcon(name) {
-
-  if (name.includes("ママ")) return "👩";
-  if (name.includes("パパ")) return "👨";
-  if (name.includes("結")) return "👧";
-  if (name.includes("洸")) return "👦";
-  if (name.includes("共通")) return "🌟";
-
-  return "🙂"; // その他
-}
 
 let firstSelectedIcon = null;
 
@@ -996,11 +964,11 @@ let selectedItem = null;
 
 function openItemMenu(item){
   selectedItem = item;
-  document.getElementById("itemMenu").style.display = "block";
+  document.getElementById("itemMenu").classList.add("show");
 }
 
 function closeMenu(){
-  document.getElementById("itemMenu").style.display = "none";
+  document.getElementById("itemMenu").classList.remove("show");
 }
  function renameItem(){
 
@@ -1118,23 +1086,27 @@ function selectIcon(element, icon) {
   element.classList.add("icon-selected");
 }
 
-function autoColor(name, icon) {
+function autoColor(icon) {
 
-  if (name.includes("ママ") || icon === "👩")
-    return "mama";
+  const colorMap = {
+    "👩": "pink",
+    "👨": "blue",
+    "👧": "rose",
+    "👦": "sky",
+    "👶": "yellow",
 
-  if (name.includes("パパ") || icon === "👨")
-    return "papa";
+    "🐶": "green",
+    "🐱": "purple",
+    "🐾": "mint",
 
-  if (icon === "👧" || icon === "👶")
-    return "yuina";
+    "🌸": "sakura",
+    "🌼": "flower",
 
-  if (icon === "👦")
-    return "koki";
+    "🧸": "brown"
+  };
 
-  return "common";
+  return colorMap[icon] || "common";
 }
-
 
 function addFamilyUser() {
 
@@ -1160,7 +1132,7 @@ users = users.filter(
 users.push({
   name: name,
   icon: selectedIcon,
-  color: autoColor(name, selectedIcon)
+  color: autoColor(selectedIcon)
 });
 // 最後に共通を戻す
 users.push(commonUser);
