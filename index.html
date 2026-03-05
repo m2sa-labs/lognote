@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html>
+  
+<head>
+  <link rel="apple-touch-icon" href="icon.png">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#9bbfa6">
+  <title>Life Log</title>
+  <style>
+body {
+  font-family: "Hiragino Maru Gothic ProN", "Arial Rounded MT Bold", sans-serif;
+  background: #f7f4ef;
+  margin: 0;
+  padding: 20px;
+}
+select {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-size: 15px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid #dcdcdc;
+  margin-bottom: 14px;
+  background: #fafafa;
+}
+.card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  padding: 24px 20px 40px 20px;
+
+  margin: 0 auto;   /* ← これ追加！ */
+}
+
+h2 {
+  text-align: center;
+  color: #6d8b74;
+  margin-bottom: 20px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+h3 {
+  margin-top: 28px;
+  margin-bottom: 10px;
+  color: #6b7d73;
+  font-size: 15px;
+}
+
+input[type="date"],
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  border: 1px solid #dcdcdc;
+  font-size: 14px;
+  background: #fafafa;
+}
+
+label {
+  font-size: 13px;
+  color: #7a7a7a;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  border-radius: 16px;
+  border: none;
+  font-size: 15px;
+  background: #9bbfa6;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #88ab94;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: #f5f7f6;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+li {
+  list-style: none;
+  background: #ffffff;
+  margin-bottom: 10px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+li:hover {
+  transform: translateY(-2px);
+}
+ .user-switch {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.user {
+  width: 72px;
+  height: 72px;
+  background: #ffffff;
+  border-radius: 50%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 26px;
+
+  box-shadow:
+    0 6px 14px rgba(0,0,0,0.08),
+    inset 0 2px 4px rgba(255,255,255,0.8);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+#firstIconSelect span,
+#iconSelect span {
+  transition: 0.2s;
+  border-radius: 10px;
+  padding: 4px;
+}
+#firstIconSelect span:hover,
+#iconSelect span:hover {
+  background: #f6e7d8;
+  transform: scale(1.15);
+}
+
+.icon-selected {
+  background: #ffd9ec;
+  transform: scale(1.25);
+}
+
+.user span {
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.user:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 10px 20px rgba(0,0,0,0.12);
+}
+
+.user:active {
+  transform: scale(0.92);
+}
+
+.user.active {
+  background: #f0f7f3;
+  border: 3px solid #7ea98f;
+
+  transform: scale(1.12);
+
+  box-shadow:
+    0 8px 18px rgba(126,169,143,0.35);
+}
+#currentUserDisplay {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #4f6f5d;
+  font-weight: 700;
+}
+.user span {
+  font-size: 11px;
+  margin-top: 5px;
+  opacity: 0.8;
+}
+
+#currentUserDisplay {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #4f6f5d;
+  font-weight: 700;
+}
+.delete-btn {
+  cursor: pointer;
+  font-size: 13px;
+  margin-left: 6px;
+  opacity: 0.5;
+  transition: 0.2s;
+}
+
+.delete-btn:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+li {
+  animation: fadeIn 0.3s ease;
+  color: #444;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+#buttonArea {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+body.mama {
+  background: #f2f8f3;
+}
+
+body.yuina {
+  background: #fff2f7;
+}
+
+body.koki {
+  background: #f2f6ff;
+}
+
+body.papa {
+  background: #f7f4ef;
+}
+
+body.common {
+  background: #eef7f7;
+}
+body.mama .card {
+  background: #ffffff;
+  border-top: 6px solid #9bbfa6;
+}
+
+body.yuina .card {
+  background: #ffffff;
+  border-top: 6px solid #ffb6d5;
+}
+
+body.koki .card {
+  background: #ffffff;
+  border-top: 6px solid #8fb3ff;
+}
+
+body.papa .card {
+  background: #ffffff;
+  border-top: 6px solid #c7b299;
+}
+
+body.common .card {
+  background: #ffffff;
+  border-top: 6px solid #8fd3d3;
+}
+.add-user {
+
+  margin-top: 10px;
+  background: #f6e7d8;
+  color: #555;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0,0,0,0.3);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9999;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  width: 280px;
+  text-align: center;
+
+  position: relative;
+}
+
+#iconSelect span {
+  font-size: 28px;
+  margin: 6px;
+  cursor: pointer;
+}
+li {
+  border-left: 4px solid #9bbfa6;
+}
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:8px 0;
+  border-top:1px solid #ddd;
+}
+
+.bottom-nav button{
+  background:none;
+  border:none;
+  font-size:12px;
+  color:#555;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.bottom-nav button div{
+  font-size:20px;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div id="setupScreen" style="display:none; text-align:center;">
+
+<h2>🌿 はじめまして</h2>
+
+<p>最初に使う人の名前を教えてください</p>
+
+<input
+  type="text"
+  id="firstUserName"
+  placeholder="名前（例：ママ）"
+>
+<p>アイコンを選んでね</p>
+
+<div id="firstIconSelect">
+  <span onclick="selectFirstIcon(this, '👩')">👩</span>
+  <span onclick="selectFirstIcon(this, '👨')">👨</span>
+  <span onclick="selectFirstIcon(this, '👧')">👧</span>
+  <span onclick="selectFirstIcon(this, '👦')">👦</span>
+  <span onclick="selectFirstIcon(this, '👶')">👶</span>
+
+  <span onclick="selectFirstIcon(this, '🐶')">🐶</span>
+  <span onclick="selectFirstIcon(this, '🐱')">🐱</span>
+  <span onclick="selectFirstIcon(this, '🐾')">🐾</span>
+
+  <span onclick="selectFirstIcon(this, '🌸')">🌸</span>
+  <span onclick="selectFirstIcon(this, '🌼')">🌼</span>
+
+  <span onclick="selectFirstIcon(this, '🧸')">🧸</span>
+</div>
+<button onclick="startApp()">
+はじめる
+</button>
+
+</div>
+<div id="appScreen">
+
+<h2>🌿 LogNote</h2>
+
+<div id="currentUserDisplay"></div>
+
+<div class="user-switch" id="userList"></div>
+
+<button onclick="openUserModal()" class="add-user">
+＋ ユーザーを追加
+</button>
+</div>
+
+<!-- ✅① 記録ボタン -->
+<h3>➕ 記録する</h3>
+<div id="buttonArea"></div>
+
+<!-- ✅② メモ -->
+<h3>📝 内容メモ</h3>
+<input type="text" id="memoInput" placeholder="メモ（内容など）">
+
+<!-- ✅③ 記録一覧 -->
+<h3>📖 記録一覧</h3>
+<ul id="logList"></ul>
+
+<!-- ✅④ 日付 -->
+<h3>📅 日付</h3>
+<input type="date" id="logDate">
+
+<hr>
+
+<!-- ✅⑤ 項目管理 -->
+<h3>⚙️ 項目管理</h3>
+
+<input type="text" id="newItem" placeholder="新しい項目">
+<button onclick="addNewItem()">＋ 項目追加</button>
+<button onclick="toggleEditMode()" id="editBtn">
+✏️ 編集モードOFF
+</button>
+
+
+
+<button onclick="backupData()">💾 バックアップ保存</button>
+
+<button onclick="loadBackup()">📂 バックアップ読み込み</button>
+
+<input type="file" id="backupFile" style="display:none">
+</div>
+<div class="bottom-nav">
+  <button onclick="scrollToRecord()">
+    <div>➕</div>
+    <span>記録</span>
+  </button>
+
+  <button onclick="scrollToLogs()">
+    <div>📖</div>
+    <span>記録一覧</span>
+  </button>
+
+  <button onclick="scrollToSettings()">
+    <div>⚙️</div>
+    <span>項目管理</span>
+  </button>
+</div>
+<script>
+  function scrollToRecord() {
+  document.getElementById("buttonArea")
+    .scrollIntoView({ behavior: "smooth" });
+}
+
+function scrollToLogs() {
+  document.getElementById("logList")
+    .scrollIntoView({ behavior: "smooth" });
+}
+
+function scrollToSettings() {
+  document.getElementById("newItem")
+    .scrollIntoView({ behavior: "smooth" });
+}
+window.addEventListener("load", function() {
+  document.getElementById("logDate").valueAsDate = new Date();
+});
+const userColors = {
+  "ママ": "#ffb6c1",
+  "結菜": "#ffd966",
+  "洸希": "#a4c2f4",
+  "パパ": "#b6d7a8",
+  "共通": "#dddddd"
+};
+function getIcon(name) {
+  if (name.includes("美容")) return "💇‍♀️ ";
+  if (name.includes("歯")) return "🦷 ";
+  if (name.includes("病")) return "🏥 ";
+  if (name.includes("薬")) return "💊 ";
+
+  if (name.includes("ネイル")) return "💅 ";
+  if (name.includes("健康")) return "🧾 ";
+  if (name.includes("運動")) return "🏃 ";
+  if (name.includes("ワクチン")) return "💉 ";
+  if (name.includes("トリミ")) return "✂️ ";
+  if (name.includes("イベント")) return "🎉 ";
+  if (name.includes("旅行")) return "✈️ ";
+
+  return "📌 ";
+}
+let editMode = false;
+  let users =
+JSON.parse(localStorage.getItem("users")) || [];
+
+
+let currentUser =
+  localStorage.getItem("currentUser") ||
+  (users.length > 0 ? users[0].name : null);
+if (!currentUser) {
+
+  document.getElementById("setupScreen").style.display = "block";
+  document.getElementById("appScreen").style.display = "none";
+
+}
+
+    let userItems =
+ JSON.parse(localStorage.getItem("userItems")) || {
+   "ママ": ["美容院","病院","歯医者"],
+   "結菜": ["病院","歯医者"],
+   "洸希": ["病院"],
+   "パパ": ["病院"],
+   "共通": ["病院"]
+ };
+
+function renderButtons() {
+
+  const area = document.getElementById("buttonArea");
+  area.innerHTML = "";
+
+  const items = userItems[currentUser] || [];
+
+  items.forEach(item => {
+
+    const btn = document.createElement("button");
+    btn.textContent = getIcon(item) + item;
+   btn.draggable = true;
+btn.dataset.item = item;
+
+   let pressTimer;
+let longPress = false;
+
+btn.addEventListener("touchstart", () => {
+
+  longPress = false;
+
+  pressTimer = setTimeout(() => {
+    longPress = true;
+    openItemMenu(item);
+  }, 700);
+
+});
+
+btn.addEventListener("touchend", (e) => {
+
+  clearTimeout(pressTimer);
+
+  // 長押し成功したら記録しない
+  if (longPress) {
+    e.preventDefault();
+    return;
+  }
+
+  addLog(item);
+
+});
+
+// ⭐PC用クリック
+btn.addEventListener("click", () => {
+  addLog(item);
+});
+
+btn.addEventListener("touchmove", () => {
+  clearTimeout(pressTimer);
+});
+
+
+    if (editMode) {
+
+  // 上
+  const up = document.createElement("span");
+  up.textContent = " ⬆️";
+  up.className = "move-btn";
+  up.onclick = (e) => {
+    e.stopPropagation();
+
+    const list = userItems[currentUser];
+    const index = list.indexOf(item);
+
+    if (index > 0) {
+      [list[index - 1], list[index]] =
+        [list[index], list[index - 1]];
+
+      localStorage.setItem("userItems", JSON.stringify(userItems));
+      renderButtons();
+    }
+  };
+
+  // 下
+  const down = document.createElement("span");
+  down.textContent = " ⬇️";
+  down.className = "move-btn";
+  down.onclick = (e) => {
+    e.stopPropagation();
+
+    const list = userItems[currentUser];
+    const index = list.indexOf(item);
+
+    if (index < list.length - 1) {
+      [list[index + 1], list[index]] =
+        [list[index], list[index + 1]];
+
+      localStorage.setItem("userItems", JSON.stringify(userItems));
+      renderButtons();
+    }
+  };
+
+  // 削除
+  const del = document.createElement("span");
+  del.textContent = " ❌";
+  del.onclick = (e) => {
+    e.stopPropagation();
+
+    if (confirm(item + " を削除する？")) {
+      userItems[currentUser] =
+        userItems[currentUser].filter(i => i !== item);
+
+      localStorage.setItem("userItems", JSON.stringify(userItems));
+      renderButtons();
+    }
+  };
+
+ const actions = document.createElement("span");
+
+actions.appendChild(up);
+actions.appendChild(down);
+actions.appendChild(del);
+
+btn.appendChild(actions);
+}
+    area.appendChild(btn);
+
+  });
+
+}
+function changeUser(name, element) {
+  currentUser = name;
+ localStorage.setItem("currentUser", name); // ←追加
+  document.body.className = "";
+
+  const user = users.find(u => u.name === name);
+  if (user) {
+    document.body.classList.add(user.color);
+  }
+
+  document.querySelectorAll(".user").forEach(el => {
+    el.classList.remove("active");
+  });
+
+  if (element) {
+    element.classList.add("active");
+  }
+
+  document.getElementById("currentUserDisplay").textContent =
+    "🌿 " + name + " の記録";
+
+  renderLogs();
+  renderButtons();
+}
+  const logList = document.getElementById("logList");
+  let logs = JSON.parse(localStorage.getItem("lifeLogs")) || [];
+let openedType = null;
+
+ function renderLogs() {
+  logList.innerHTML = "";
+
+  let grouped = {};
+
+  logs.forEach((log, index) => {
+    if (log.user !== currentUser) return;
+
+    if (!grouped[log.type]) {
+      grouped[log.type] = [];
+    }
+
+    grouped[log.type].push({ ...log, index });
+  });
+
+  for (let type in grouped) {
+    const items = grouped[type];
+
+    items.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    const latest = items[0];
+
+    const li = document.createElement("li");
+    li.style.cursor = "pointer";
+
+    const today = new Date(latest.date);
+
+let daysText = "";
+
+if (items.length > 1) {
+  const prev = new Date(items[1].date);
+  const diff =
+    Math.floor((today - prev) / (1000 * 60 * 60 * 24));
+
+  daysText = " 🕒 前回から " + diff + "日";
+}
+
+const todayStr = new Date().toISOString().split("T")[0];
+
+const displayDate =
+  latest.date === todayStr ? "今日" : latest.date;
+
+li.textContent =
+  displayDate +
+  " - " +
+  latest.type +
+  (latest.memo ? "（" + latest.memo + "）" : "") +
+  daysText;
+    li.onclick = function () {
+      if (li.dataset.open === "true") {
+        renderLogs();
+        return;
+      }
+
+      li.dataset.open = "true";
+      openedType = type;
+li.style.display = "block";
+li.innerHTML = "<strong>" + type + " の履歴</strong><br><br>";
+
+     
+      items.forEach((item, i) => {
+
+  let daysText = "";
+
+  if (item.type === "生理" && i < items.length - 1) {
+
+    const current = new Date(item.date);
+    const prev = new Date(items[i + 1].date);
+
+    const diff = Math.floor(
+      (current - prev) / (1000 * 60 * 60 * 24)
+    );
+
+    daysText = " 🕒 前回から " + diff + "日";
+  }
+
+  li.innerHTML +=
+    item.date +
+    (item.memo ? "（" + item.memo + "）" : "") +
+    daysText +
+    ' <span class="delete-btn" onclick="event.stopPropagation(); deleteLog(' + item.index + ')">🗑</span><br>';
+});
+    }; 
+
+    logList.appendChild(li);
+  }
+}
+
+function addLog(type) {
+
+  const selectedDate = document.getElementById("logDate").value;
+  const date =
+  selectedDate ||
+  new Date().toISOString().split("T")[0];
+
+  const user = currentUser;
+  const memo = document.getElementById("memoInput").value;
+
+  const newLog = {
+    user: user,
+    type: type,
+    date: date,
+    memo: memo
+  };
+
+  logs.push(newLog);
+  localStorage.setItem("lifeLogs", JSON.stringify(logs));
+  renderLogs();
+
+  document.getElementById("memoInput").value = "";
+
+  // ⭐追加
+  document.getElementById("logDate").valueAsDate = new Date();
+}
+function addNewItem() {
+
+  const input = document.getElementById("newItem");
+  const value = input.value.trim();
+
+  if (value === "") return;
+
+  if (!userItems[currentUser]) {
+    userItems[currentUser] = [];
+  }
+
+  userItems[currentUser].push(value);
+
+  localStorage.setItem(
+    "userItems",
+    JSON.stringify(userItems)
+  );
+
+  renderButtons();
+
+  input.value = "";
+}
+  renderLogs();
+ 
+ function deleteLog(index) {
+  logs.splice(index, 1);
+  localStorage.setItem("lifeLogs", JSON.stringify(logs));
+
+  const reopen = openedType;  // 覚えておく
+  renderLogs();
+
+  // 再度開く
+  if (reopen) {
+    const listItems = document.querySelectorAll("#logList li");
+    listItems.forEach(li => {
+      if (li.textContent.includes(reopen)) {
+        li.click();
+      }
+    });
+  }
+}
+document.getElementById("currentUserDisplay").textContent =
+  "🌿 " + currentUser + " の記録";
+
+ function backupData() {
+
+  const data = {
+    logs: logs,
+    userItems: userItems
+  };
+
+  const dataStr =
+    JSON.stringify(data, null, 2);
+
+  const blob =
+    new Blob([dataStr], { type: "application/json" });
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = "lognote-backup.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+renderButtons();
+
+function toggleEditMode() {
+
+  editMode = !editMode;
+
+  const btn =
+    document.getElementById("editBtn");
+
+  btn.textContent =
+    editMode
+      ? "✅ 編集モードON"
+      : "✏️ 編集モードOFF";
+
+  renderButtons();
+}
+function loadBackup() {
+
+  const fileInput =
+    document.getElementById("backupFile");
+
+  fileInput.click();
+
+  fileInput.onchange = function () {
+
+    const file = fileInput.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+
+      const data = JSON.parse(e.target.result);
+
+      if (confirm("バックアップを復元しますか？")) {
+
+        logs = data.logs || [];
+userItems = data.userItems || {};
+
+localStorage.setItem(
+  "userItems",
+  JSON.stringify(userItems)
+);
+
+        localStorage.setItem(
+          "lifeLogs",
+          JSON.stringify(logs)
+        );
+
+        renderLogs();
+        renderButtons(); 
+      }
+    };
+
+    reader.readAsText(file);
+  };
+}
+function renderUsers() {
+  const userArea = document.getElementById("userList");
+  if (!userArea) return;
+
+  userArea.innerHTML = "";
+
+  users.forEach((user, index) => {
+
+    const div = document.createElement("div");
+    div.className = "user";
+
+    if (user.name === currentUser) {
+  div.classList.add("active");
+}
+
+    div.innerHTML =
+      user.icon + "<span>" + user.name + "</span>";
+
+    div.onclick = () => changeUser(user.name, div);
+
+    userArea.appendChild(div);
+  });
+}
+renderUsers();
+
+if (currentUser) {
+  changeUser(currentUser);
+}
+
+function autoIcon(name) {
+
+  if (name.includes("ママ")) return "👩";
+  if (name.includes("パパ")) return "👨";
+  if (name.includes("結")) return "👧";
+  if (name.includes("洸")) return "👦";
+  if (name.includes("共通")) return "🌟";
+
+  return "🙂"; // その他
+}
+
+let firstSelectedIcon = null;
+
+function selectFirstIcon(element, icon) {
+  firstSelectedIcon = icon;
+
+  const icons = document.querySelectorAll("#firstIconSelect span");
+
+  icons.forEach(el => {
+    el.classList.remove("icon-selected");
+  });
+
+  element.classList.add("icon-selected");
+}
+
+ 
+
+function startApp() {
+
+  const name =
+    document.getElementById("firstUserName").value.trim();
+
+if (!firstSelectedIcon) {
+  alert("アイコンを選んでください");
+  return;
+}
+
+  if (!name) {
+    alert("名前を入れてください");
+    return;
+  }
+
+  users = [
+  {
+    name: name,
+    icon: firstSelectedIcon,
+    color: autoColor(name, firstSelectedIcon)
+  },
+  {
+    name: "共通",
+     icon: "🌟",
+    color: "common"
+  }
+];
+
+  localStorage.setItem(
+    "users",
+    JSON.stringify(users)
+  );
+
+  // ⭐追加（超重要）
+  localStorage.setItem(
+    "currentUser",
+    name
+  );
+
+  currentUser = name;
+
+  document.getElementById("setupScreen").style.display = "none";
+  document.getElementById("appScreen").style.display = "block";
+
+ if (!localStorage.getItem("users")) {
+
+  document.getElementById("setupScreen").style.display = "block";
+  document.getElementById("appScreen").style.display = "none";
+
+} else {
+
+  document.getElementById("setupScreen").style.display = "none";
+  document.getElementById("appScreen").style.display = "block";
+
+  renderUsers();
+  changeUser(currentUser);
+}
+}
+let selectedIcon = "👩";
+
+function openUserModal() {
+  document.getElementById("userModal").style.display = "flex";
+}
+
+function closeUserModal() {
+  document.getElementById("userModal").style.display = "none";
+}
+function selectIcon(element, icon) {
+  selectedIcon = icon;
+
+  const icons = document.querySelectorAll("#iconSelect span");
+
+  icons.forEach(el => {
+    el.classList.remove("icon-selected");
+  });
+
+  element.classList.add("icon-selected");
+}
+
+function autoColor(name, icon) {
+
+  if (name.includes("ママ") || icon === "👩")
+    return "mama";
+
+  if (name.includes("パパ") || icon === "👨")
+    return "papa";
+
+  if (icon === "👧" || icon === "👶")
+    return "yuina";
+
+  if (icon === "👦")
+    return "koki";
+
+  return "common";
+}
+
+
+function addFamilyUser() {
+
+  const name =
+    document.getElementById("newUserName").value.trim();
+
+  if (!name) {
+    alert("名前を入れてね");
+    return;
+  }
+
+  // 共通を一回取り出す
+const commonUser = users.find(
+  user => user.name === "共通"
+);
+
+// 共通を消す
+users = users.filter(
+  user => user.name !== "共通"
+);
+
+// 新しい家族追加
+users.push({
+  name: name,
+  icon: selectedIcon,
+  color: autoColor(name, selectedIcon)
+});
+// 最後に共通を戻す
+users.push(commonUser);
+    
+  localStorage.setItem(
+    "users",
+    JSON.stringify(users)
+  );
+
+  closeUserModal();
+
+  renderUsers();
+}
+if (!localStorage.getItem("users")) {
+
+  document.getElementById("setupScreen").style.display = "block";
+  document.getElementById("appScreen").style.display = "none";
+
+} else {
+
+  document.getElementById("setupScreen").style.display = "none";
+  document.getElementById("appScreen").style.display = "block";
+
+  renderUsers();
+  changeUser(currentUser);
+}
+function openItemMenu(item) {
+
+  const action = confirm(
+    item + "\n\nOK → 名前変更\nキャンセル → 削除"
+  );
+
+  // 名前変更
+  if (action) {
+
+    const newName =
+      prompt("新しい名前を入力");
+
+    if (!newName) return;
+
+    userItems[currentUser] =
+      userItems[currentUser].map(i =>
+        i === item ? newName : i
+      );
+
+  } else {
+
+    if (!confirm(item + " を削除する？"))
+      return;
+
+    userItems[currentUser] =
+      userItems[currentUser].filter(
+        i => i !== item
+      );
+  }
+
+  localStorage.setItem(
+    "userItems",
+    JSON.stringify(userItems)
+  );
+
+  renderButtons();
+}
+
+
+window.onload = function () {
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("sw.js")
+      .then(() => console.log("SW登録OK"))
+      .catch(err => console.log(err));
+  }
+
+  function autoBackup() {
+
+    const data = {
+      logs: logs,
+userItems: userItems
+    };
+
+    localStorage.setItem(
+      "lifeLogAutoBackup",
+      JSON.stringify(data));
+  }
+
+  setInterval(autoBackup, 5000);
+
+};
+</script>
+<div id="userModal" class="modal" style="display:none;">
+
+<div class="modal-content">
+
+<h3>家族を追加</h3>
+
+<input
+type="text"
+id="newUserName"
+placeholder="名前を入力"
+>
+
+<p>アイコンを選んでね</p>
+
+<div id="iconSelect">
+  <span onclick="selectIcon(this, '👩')">👩</span>
+  <span onclick="selectIcon(this, '👨')">👨</span>
+  <span onclick="selectIcon(this, '👧')">👧</span>
+  <span onclick="selectIcon(this, '👦')">👦</span>
+  <span onclick="selectIcon(this, '👶')">👶</span>
+
+  <span onclick="selectIcon(this, '🐶')">🐶</span>
+  <span onclick="selectIcon(this, '🐱')">🐱</span>
+  <span onclick="selectIcon(this, '🐾')">🐾</span>
+
+  <span onclick="selectIcon(this, '🌸')">🌸</span>
+  <span onclick="selectIcon(this, '🌼')">🌼</span>
+
+  <span onclick="selectIcon(this, '🧸')">🧸</span>
+</div>
+
+<button onclick="addFamilyUser()">
+追加する
+</button>
+
+<button onclick="closeUserModal()">
+キャンセル
+</button>
+
+
+
+</div>
+</div>
+</body>
+</html>
