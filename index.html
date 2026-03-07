@@ -2,10 +2,13 @@
 <html>
   
 <head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
   <link rel="apple-touch-icon" href="icon.png">
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+   >
   <meta charset="UTF-8">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.png">
@@ -14,13 +17,19 @@
 <meta name="theme-color" content="#9bbfa6">
   <title>Life Log</title>
   <style>
-    body {
+    * {
+  box-sizing: border-box;
+}
+html, body {
   overflow-x: hidden;
 }
 body {
   font-family: "Hiragino Maru Gothic ProN", "Arial Rounded MT Bold", sans-serif;
   background: #f7f4ef;
   margin: 0;
+}
+body {
+  touch-action: manipulation;
 }
 select {
   font-family: 'M PLUS Rounded 1c', sans-serif;
@@ -105,9 +114,6 @@ li {
   padding: 12px;
   border-radius: 14px;
   font-size: 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 li {
   list-style: none;
@@ -125,6 +131,11 @@ li:hover {
   display: flex;
   justify-content: space-around;
   margin: 20px 0;
+}
+.user {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .user {
@@ -245,6 +256,17 @@ li {
   margin-bottom: 15px;
 }
 
+#buttonArea button{
+  width:100%;
+  padding:10px 8px;
+  font-size:14px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+}
+
 body.mama {
   background: #f2f8f3;
 }
@@ -320,7 +342,21 @@ body.common .card {
 
   position: relative;
 }
+#logList li{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 0;
+}
 
+.logName{
+  font-weight:600;
+}
+
+.logDate{
+  color:#777;
+  font-size:13px;
+}
 #iconSelect span {
   font-size: 28px;
   margin: 6px;
@@ -417,6 +453,43 @@ body.common { background:#f5f5f5; }
   background:#f6e7d8;
   color:#555;
 }
+.item-add{
+  display:flex;
+  gap:8px;
+  align-items:stretch;
+}
+
+.item-add input{
+  flex:1;
+  margin-bottom:0;
+}
+
+.item-add button{
+  margin-top:0;
+  width:auto;
+  padding:12px 16px;
+  font-size:14px;
+}
+.history-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 0;
+  border-bottom:1px solid #eee;
+}
+.date-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.date-row input {
+  padding: 6px;
+  font-size: 14px;
+}
+.delete-btn{
+  cursor:pointer;
+  font-size:14px;
+}
 </style>
 </head>
 <body>
@@ -477,27 +550,28 @@ body.common { background:#f5f5f5; }
 <!-- ✅① 記録ボタン -->
 <h3>➕ 記録する</h3>
 <div id="buttonArea"></div>
-
 <!-- ✅② メモ -->
 <h3>📝 内容メモ</h3>
 <input type="text" id="memoInput" placeholder="メモ（内容など）">
-
+<!-- ✅④ 日付 -->
+<h3>📅 日付</h3>
+<div class="date-row">
+  <input type="date" id="logDate">
+  <input type="text" id="logDateText" placeholder="例: 20260307">
+</div>
+<hr>
 <!-- ✅③ 記録一覧 -->
 <h3>📖 記録一覧</h3>
 <ul id="logList"></ul>
-
-<!-- ✅④ 日付 -->
-<h3>📅 日付</h3>
-<input type="date" id="logDate">
-
-<hr>
-
 <!-- ✅⑤ 項目管理 -->
 <h3>⚙️ 項目管理</h3>
 
-<input type="text" id="newItem" placeholder="新しい項目">
-<button onclick="addNewItem()">＋ 項目追加</button>
+<div class="item-add">
+  <input type="text" id="newItem" placeholder="新しい項目">
+  <button onclick="addNewItem()">＋追加</button>
+</div>
 
+<hr>
 <button onclick="backupData()">💾 バックアップ保存</button>
 
 <button onclick="loadBackup()">📂 バックアップ読み込み</button>
@@ -559,7 +633,7 @@ function getIcon(name) {
   if (name.includes("イベント")) return "🎉 ";
   if (name.includes("旅行")) return "✈️ ";
 
-  return "📌 ";
+  return "⭐ ";
 }
   let users =
 JSON.parse(localStorage.getItem("users")) || [];
@@ -588,7 +662,9 @@ function renderButtons() {
   items.forEach(item => {
 
     const btn = document.createElement("button");
-    btn.textContent = getIcon(item) + item;
+    btn.innerHTML =
+  "<span style='font-size:18px'>" + getIcon(item) + "</span> " +
+  "<span>" + item + "</span>";
    btn.draggable = true;
 btn.dataset.item = item;
 
@@ -685,8 +761,12 @@ let openedType = null;
 
     grouped[log.type].push({ ...log, index });
   });
-
-  for (let type in grouped) {
+const sortedTypes = Object.keys(grouped).sort((a, b) => {
+  const dateA = new Date(grouped[a][0].date);
+  const dateB = new Date(grouped[b][0].date);
+  return dateB - dateA;
+});
+  sortedTypes.forEach(type => {
     const items = grouped[type];
 
     items.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -713,12 +793,16 @@ const todayStr = new Date().toISOString().split("T")[0];
 const displayDate =
   latest.date === todayStr ? "今日" : latest.date;
 
-li.textContent =
+li.innerHTML =
+  "<span class='logName'>" +
+  getIcon(latest.type) + latest.type +
+  "</span>" +
+
+  "<span class='logDate'>" +
   displayDate +
-  " - " +
-  latest.type +
   (latest.memo ? "（" + latest.memo + "）" : "") +
-  daysText;
+  daysText +
+  "</span>";
     li.onclick = function () {
       if (li.dataset.open === "true") {
         renderLogs();
@@ -748,23 +832,40 @@ li.innerHTML = "<strong>" + type + " の履歴</strong><br><br>";
   }
 
   li.innerHTML +=
-    item.date +
-    (item.memo ? "（" + item.memo + "）" : "") +
-    daysText +
-    ' <span class="delete-btn" onclick="event.stopPropagation(); deleteLog(' + item.index + ')">🗑</span><br>';
+  "<div class='history-row'>" +
+  "<span>📅 " + item.date + (item.memo ? "（" + item.memo + "）" : "") + daysText + "</span>" +
+  "<span class='delete-btn' onclick='event.stopPropagation(); deleteLog(" + item.index + ")'>🗑</span>" +
+  "</div>";
 });
-    }; 
+    }
 
     logList.appendChild(li);
-  }
+});
 }
+document
+  .getElementById("newItem")
+  .addEventListener("keypress", function(e){
+    if(e.key === "Enter"){
+      addNewItem();
+    }
+});
 
 function addLog(type) {
 
-  const selectedDate = document.getElementById("logDate").value;
-  const date =
-  selectedDate ||
-  new Date().toISOString().split("T")[0];
+  let selectedDate =
+  document.getElementById("logDateText").value ||
+  document.getElementById("logDate").value;
+
+  if (/^\d{8}$/.test(selectedDate)) {
+    selectedDate =
+      selectedDate.slice(0,4) + "-" +
+      selectedDate.slice(4,6) + "-" +
+      selectedDate.slice(6,8);
+  }
+
+  const date = selectedDate
+    ? new Date(selectedDate).toISOString().split("T")[0]
+    : new Date().toISOString().split("T")[0];
 
   const user = currentUser;
   const memo = document.getElementById("memoInput").value;
@@ -779,11 +880,10 @@ function addLog(type) {
   logs.push(newLog);
   localStorage.setItem("lifeLogs", JSON.stringify(logs));
   renderLogs();
-
-  document.getElementById("memoInput").value = "";
-
-  // ⭐追加
-  document.getElementById("logDate").valueAsDate = new Date();
+document.getElementById("memoInput").value = "";
+document.getElementById("logDateText").value = "";
+document.getElementById("logDate").valueAsDate = new Date();
+ 
 }
 function addNewItem() {
 
@@ -903,62 +1003,71 @@ function renderUsers() {
 
   userArea.innerHTML = "";
 
-  users.forEach((user, index) => {
-
+  users.forEach((user) => {
     const div = document.createElement("div");
     div.className = "user";
 
     if (user.name === currentUser) {
-  div.classList.add("active");
-}
-
-    div.innerHTML =
-      user.icon + "<span>" + user.name + "</span>";
-
-    div.onclick = () => changeUser(user.name, div);
-let pressTimer;
-
-div.addEventListener("touchstart", () => {
-
-  pressTimer = setTimeout(() => {
-
-    if (user.name === "共通") return;
-
-    if (confirm(user.name + " を削除する？")) {
-
-      users = users.filter(u => u.name !== user.name);
-
-      // ⭐ 今のユーザーだったら変更
-      if (currentUser === user.name) {
-        currentUser = users.length > 0 ? users[0].name : null;
-        localStorage.setItem("currentUser", currentUser);
-      }
-
-      localStorage.setItem("users", JSON.stringify(users));
-
-      renderUsers();
-      renderButtons();
-
+      div.classList.add("active");
     }
 
-  }, 700);
+    div.innerHTML = user.icon + "<span>" + user.name + "</span>";
 
-});
+    let pressTimer = null;
+    let isLongPress = false;
 
-div.addEventListener("touchend", () => {
-  clearTimeout(pressTimer);
-});
+    // タップ
+    div.addEventListener("click", (e) => {
+      if (isLongPress) {
+        e.preventDefault();
+        isLongPress = false;
+        return;
+      }
+      changeUser(user.name, div);
+    });
+
+    // 長押し開始
+    div.addEventListener("touchstart", () => {
+      isLongPress = false;
+
+      pressTimer = setTimeout(() => {
+        isLongPress = true;
+
+        if (user.name === "共通") return;
+
+        if (confirm(user.name + " を削除する？")) {
+          users = users.filter(u => u.name !== user.name);
+
+          if (currentUser === user.name) {
+            currentUser = users.length > 0 ? users[0].name : null;
+            localStorage.setItem("currentUser", currentUser);
+          }
+
+          localStorage.setItem("users", JSON.stringify(users));
+          renderUsers();
+          renderButtons();
+        }
+      }, 700);
+    });
+
+    // 長押し終了
+    div.addEventListener("touchend", () => {
+      clearTimeout(pressTimer);
+    });
+
+    // 指が動いたらキャンセル
+    div.addEventListener("touchmove", () => {
+      clearTimeout(pressTimer);
+    });
+
+    // 中断時もキャンセル
+    div.addEventListener("touchcancel", () => {
+      clearTimeout(pressTimer);
+    });
+
     userArea.appendChild(div);
   });
 }
-renderUsers();
-
-if (currentUser) {
-  changeUser(currentUser);
-}
-
-
-let firstSelectedIcon = null;
 
 function selectFirstIcon(element, icon) {
   firstSelectedIcon = icon;

@@ -1,4 +1,4 @@
-const CACHE_NAME = "life-log-cache-v5";
+const CACHE_NAME = "lognote-v6";
 
 const urlsToCache = [
   "./",
