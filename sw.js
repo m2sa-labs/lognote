@@ -1,4 +1,4 @@
-const CACHE_NAME = "lognote-v7";
+const CACHE_NAME = "lognote-v8";
 
 const urlsToCache = [
   "./",
