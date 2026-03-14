@@ -1,4 +1,4 @@
-const CACHE_NAME = "lognote-9";
+const CACHE_NAME = "lognote-10";
 
 const urlsToCache = [
   "./",

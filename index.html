@@ -776,17 +776,15 @@ const sortedTypes = Object.keys(grouped).sort((a, b) => {
     const li = document.createElement("li");
     li.style.cursor = "pointer";
 
-    const today = new Date(latest.date);
+    const latestDate = new Date(latest.date);
+const now = new Date();
 
 let daysText = "";
 
-if (items.length > 1) {
-  const prev = new Date(items[1].date);
-  const diff =
-    Math.floor((today - prev) / (1000 * 60 * 60 * 24));
+const diff =
+  Math.floor((now - latestDate) / (1000 * 60 * 60 * 24));
 
-  daysText = " 🕒 前回から " + diff + "日";
-}
+daysText = " 🕒 " + diff + "日前";
 
 const todayStr = new Date().toISOString().split("T")[0];
 
